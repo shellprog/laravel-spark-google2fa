@@ -34,8 +34,6 @@ class TwoFactorAuthController extends Controller
      */
     public function generate(Request $request)
     {
-        $this->g2fa->setAllowInsecureCallToGoogleApis(true);
-
         $secret = $this->g2fa->generateSecretKey();
 
         $request->session()->put('spark:twofactor:secret', $secret);
@@ -82,10 +80,6 @@ class TwoFactorAuthController extends Controller
                     Spark::$details['vendor'] ??
                     url()->to('/');
 
-        return str_replace(
-            '200x200',
-            '260x260',
-            $this->g2fa->getQRCodeGoogleUrl(urlencode($company), $email, $secret)
-        );
+        return 'https://chart.googleapis.com/chart?chs=260x260&chld=M|0&cht=qr&chl=' . $this->g2fa->getQRCodeUrl(urlencode($company), $email, $secret);
     }
 }
